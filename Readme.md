@@ -3,4 +3,5 @@ This folder contains sample project to demonstrate Implementation of spring batc
 Time comparison between 2 approaches:
 
 Prepared statements ~ 2 seconds
+
 Spring data ~ 150 seconds
