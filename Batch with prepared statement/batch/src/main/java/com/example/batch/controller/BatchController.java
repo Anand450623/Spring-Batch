@@ -25,10 +25,11 @@ public class BatchController
 	@GetMapping(value="/run")
 	public String run() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
+		long st = System.currentTimeMillis();
 		JobParametersBuilder builder = new JobParametersBuilder();
 		builder.addDate("date", new Date());
 		builder.addString("fileName","src/main/resources/Test.txt");
 		jobLauncher.run(job, builder.toJobParameters());
-		return "success";
+		return "The processing took = "+(System.currentTimeMillis()-st)+" ms<br>The current timeStamp is = "+new Date();
 	}
 }

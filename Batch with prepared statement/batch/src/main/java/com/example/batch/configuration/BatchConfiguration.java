@@ -8,8 +8,11 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -20,17 +23,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import com.example.batch.DTO.FinalItem;
 import com.example.batch.DTO.InputMapperDTO;
-import com.example.batch.DTO.Processor;
-import com.example.batch.DTO.Reader;
-import com.example.batch.DTO.Writer;
-import com.example.batch.listener.JobCompletionNotificationListener;
+import com.example.batch.batchUtils.Processor;
+import com.example.batch.batchUtils.Reader;
+import com.example.batch.batchUtils.Writer;
+import com.example.batch.entity.Batch;
+import com.example.batch.listener.BatchJobListener;
 
 @Configuration
 public class BatchConfiguration
@@ -42,31 +43,15 @@ public class BatchConfiguration
     @Autowired
     StepBuilderFactory stepBuilderFactory;
 
-    @Bean(name="jobCompletionListener")
-    public JobCompletionNotificationListener jobCompletionlistener() 
-    {
-        return new JobCompletionNotificationListener();
-    }
-
-    @Bean(name="taskExecutor")	// This bean is creating issues...
-    @Scope(value="step", proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public ThreadPoolTaskExecutor taskExecutor() 
-    {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(3);
-        executor.setMaxPoolSize(5);
-        return executor;
-    }
-
+    @StepScope
     @Bean(name="fileReader")
-    @Scope(value="step", proxyMode = ScopedProxyMode.TARGET_CLASS)
     public FlatFileItemReader<InputMapperDTO> reader(@Value("#{jobParameters['fileName']}") String fileName) throws IOException 
     {
         FlatFileItemReader<InputMapperDTO> newBean = new FlatFileItemReader<>();
         newBean.setName("fileReader");
         newBean.setResource(new InputStreamResource(FileUtils.openInputStream(new File(fileName))));
         newBean.setLineMapper(this.lineMapper());
-        newBean.setLinesToSkip(1);
+        newBean.setLinesToSkip(0);
         return newBean;
     }
 
@@ -85,28 +70,44 @@ public class BatchConfiguration
     {
         DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
         tokenizer.setDelimiter("|");
-        tokenizer.setNames("field1","field3");
-        tokenizer.setIncludedFields(0,2);
+        tokenizer.setNames("field1","field2","field3");
+        tokenizer.setIncludedFields(0,1,2);
         return tokenizer;
     }
 
     @Bean(name="fileProcessor")
-    public ItemProcessor<InputMapperDTO, FinalItem> processor() 
+    public ItemProcessor<InputMapperDTO, Batch> processor() 
     {
         return new Processor();
     }
 
     @Bean(name="fileWriter")
-    public ItemWriter<FinalItem> writer() 
+    public ItemWriter<Batch> writer() 
     {
         return new Writer();
     }
+    
+    @JobScope
+    @Bean(name="taskExecutor")	
+    public ThreadPoolTaskExecutor taskExecutor() 
+    {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(20);
+        return executor;
+    }
 
+    @Bean(name="jobCompletionListener")
+    public JobExecutionListenerSupport jobCompletionlistener() 
+    {
+        return new BatchJobListener();
+    }
+    
     @Bean(name="fileStep")
-    public Step step1() throws IOException 
+    public Step step() throws IOException 
     {
         return stepBuilderFactory.get("fileStep")
-                .<InputMapperDTO, FinalItem>chunk(10)
+                .<InputMapperDTO, Batch>chunk(500)
                 .reader(this.reader(null))
                 .processor(this.processor())
                 .writer(this.writer())
@@ -115,13 +116,13 @@ public class BatchConfiguration
     }
 
     @Bean(name="fileJob")
-    public Job importUserJob(@Autowired @Qualifier("fileStep") Step step1) 
+    public Job importUserJob(@Autowired @Qualifier("fileStep") Step step) 
     {
         return jobBuilderFactory
                 .get("fileJob"+new Date())
                 .incrementer(new RunIdIncrementer())
                 .listener(this.jobCompletionlistener())
-                .flow(step1)
+                .flow(step)
                 .end()
                 .build();
     }

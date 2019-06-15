@@ -7,11 +7,22 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-public class JobCompletionNotificationListener extends JobExecutionListenerSupport
+import com.example.batch.Service.BatchService;
+
+public class BatchJobListener extends JobExecutionListenerSupport
 {
 
     @Autowired
-    ThreadPoolTaskExecutor taskExecutor; 
+    ThreadPoolTaskExecutor taskExecutor;
+    
+    @Autowired
+    BatchService batchService;
+    
+    @Override
+	public void beforeJob(JobExecution jobExecution) 
+    {
+    	batchService.flush();
+	}
 
     @Override
     public void afterJob(JobExecution jobExecution) 
@@ -19,9 +30,6 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
         if(jobExecution.getStatus() == BatchStatus.COMPLETED) 
         {
             taskExecutor.shutdown();
-            System.err.println("*****************");
-            System.err.println("\t\tJob Completed");
-            System.err.println("*****************");
         }
     }
 
