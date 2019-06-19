@@ -1,0 +1,1 @@
+This folder contains sample project to demonstrate Implementation of spring batch for XML parsing.
