@@ -9,11 +9,11 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 public class JobListener extends JobExecutionListenerSupport 
 {
-	
-	@Autowired
+
+    @Autowired
     @Qualifier("xmltaskExecutor")
     ThreadPoolTaskExecutor taskExecutor; 
-	
+
     @Override
     public void afterJob(JobExecution jobExecution) 
     {
@@ -28,14 +28,14 @@ public class JobListener extends JobExecutionListenerSupport
         {
             System.err.println("*****************");
             System.err.println("\tJob Failed");
-            System.err.println("*****************");        	
+            System.err.println("*****************");            
         }
     }
-    
+
     @Override
-	public void beforeJob(JobExecution jobExecution) 
+    public void beforeJob(JobExecution jobExecution) 
     {
-    	
-	}
+
+    }
 
 }

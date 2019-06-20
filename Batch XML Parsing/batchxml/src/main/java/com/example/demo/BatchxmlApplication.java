@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @EnableBatchProcessing
-public class BatchxmlApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(BatchxmlApplication.class, args);
-	}
-
+public class BatchxmlApplication
+{
+    public static void main(String[] args) 
+    {
+        SpringApplication.run(BatchxmlApplication.class, args);
+    }
 }

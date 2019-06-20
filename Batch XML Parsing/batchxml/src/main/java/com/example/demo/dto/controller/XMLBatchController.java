@@ -19,20 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class XMLBatchController 
 {
-	@Autowired
-	@Qualifier("xmlJob")
-	Job job;
-	
-	@Autowired
-	private JobLauncher jobLauncher;
-	
-	@GetMapping(value="/run")
-	public String run() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException 
-	{
-		long st = System.currentTimeMillis();
-		JobParametersBuilder builder = new JobParametersBuilder();
-		builder.addDate("date", new Date());
-		jobLauncher.run(job, builder.toJobParameters());
-		return "The  processing took = "+(System.currentTimeMillis()-st)+" ms<p>Timestamp = "+new Date();
-	}
+    @Autowired
+    @Qualifier("xmlJob")
+    Job job;
+
+    @Autowired
+    private JobLauncher jobLauncher;
+
+    @GetMapping(value="/run")
+    public String run() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException 
+    {
+        long st = System.currentTimeMillis();
+        JobParametersBuilder builder = new JobParametersBuilder();
+        builder.addDate("date", new Date());
+        jobLauncher.run(job, builder.toJobParameters());
+        return "The  processing took = "+(System.currentTimeMillis()-st)+" ms<p>Timestamp = "+new Date();
+    }
 }

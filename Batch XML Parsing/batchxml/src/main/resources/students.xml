@@ -1,17 +1,23 @@
 <students>
     <student>
         <name>Tony Tester</name>
-        <emailAddress>tony.tester@gmail.com</emailAddress>
-        <purchasedPackage>master</purchasedPackage>
+        <rollNo>1</rollNo>
+        <enrollmentDate>2016-10-31</enrollmentDate>
+        <sampleTimeStamp>2016-11-07T05:50:45</sampleTimeStamp>
+        <salary>16.57</salary>
     </student>
     <student>
         <name>Nick Newbie</name>
-        <emailAddress>nick.newbie@gmail.com</emailAddress>
-        <purchasedPackage>starter</purchasedPackage>
+        <rollNo>2</rollNo>
+        <enrollmentDate>2017-10-31</enrollmentDate>
+        <sampleTimeStamp>2016-11-07T05:50:45</sampleTimeStamp>
+        <salary>29.68</salary>
     </student>
     <student>
         <name>Ian Intermediate</name>
-        <emailAddress>ian.intermediate@gmail.com</emailAddress>
-        <purchasedPackage>intermediate</purchasedPackage>
+        <rollNo>3</rollNo>
+        <enrollmentDate>2018-10-31</enrollmentDate>
+        <sampleTimeStamp>2016-11-07T05:50:45</sampleTimeStamp>
+        <salary>789.62</salary>
     </student>
 </students>
