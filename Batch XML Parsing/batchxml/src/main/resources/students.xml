@@ -1,4 +1,9 @@
-<students>
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<group>
+    <college>
+        <name>Hogwards</name>
+        <city>Unknown</city>
+    </college>
     <student>
         <name>Tony Tester</name>
         <rollNo>1</rollNo>
@@ -20,4 +25,4 @@
         <sampleTimeStamp>2016-11-07T05:50:45</sampleTimeStamp>
         <salary>789.62</salary>
     </student>
-</students>
+</group>

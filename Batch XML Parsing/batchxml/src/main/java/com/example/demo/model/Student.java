@@ -1,17 +1,18 @@
-package com.example.demo.dto;
+package com.example.demo.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class StudentDTO 
+public class Student 
 {
+	
     private String name;
     private Integer rollNo;    
     private Date enrollmentDate;
     private Date sampleTimeStamp;
     private BigDecimal salary;
 	
-    public StudentDTO() 
+    public Student() 
 	{
 		super();
 	}
@@ -61,5 +62,5 @@ public class StudentDTO
 		return "StudentDTO [name=" + name + ", rollNo=" + rollNo + ", enrollmentDate=" + enrollmentDate
 				+ ", sampleTimeStamp=" + sampleTimeStamp + ", salary=" + salary + "]";
 	}
-    
+
 }

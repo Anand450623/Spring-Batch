@@ -1,4 +1,4 @@
-package com.example.demo.dto.controller;
+package com.example.demo.controller;
 
 import java.util.Date;
 
